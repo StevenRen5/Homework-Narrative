@@ -10,12 +10,17 @@ public class PlayerMovment : MonoBehaviour
     private float _xVelocity = 0f;
     private float _yVelocity = 0f;
     public float speed = 3;
+    public float xMultiplier = 2;
+
+    public SpriteRenderer _spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         _rigRigidbody2D = GetComponent<Rigidbody2D>();
-        _playerDialogue = GetComponent<PlayerDialogue>();    
+        _playerDialogue = GetComponent<PlayerDialogue>();
+        _spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+
     }
 
     // Update is called once per frame
@@ -33,6 +38,17 @@ public class PlayerMovment : MonoBehaviour
         }
 
         
-        _rigRigidbody2D.velocity = new Vector2(_xVelocity, _yVelocity) * speed; 
+        _rigRigidbody2D.velocity = new Vector2(_xVelocity, _yVelocity) * speed;
+
+        float xMovement = Input.GetAxis("Horizontal");
+
+        // Flips the sprite if movement is 0 or more, keep it flipped if it's less than 0
+        if (xMovement >= 0) { _spriteRenderer.flipX = true; }
+        else { _spriteRenderer.flipX = false; }
+
+        // Give the speed to the rigidbody
+        _rigRigidbody2D.velocity = new Vector2(xMultiplier * xMovement, _rigRigidbody2D.velocity.y);
+
+
     }
 }
